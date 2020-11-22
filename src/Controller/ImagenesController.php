@@ -51,7 +51,7 @@ class ImagenesController
             array_push($data, $imagen_insertado);
         }
 
-        return new JsonResponse($imagenes, Response::HTTP_OK);
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 
 }

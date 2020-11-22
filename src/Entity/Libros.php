@@ -203,16 +203,21 @@ class Libros
 
     public function setImagenes(string $img_id): self
     {
-        $current_imgs = []; 
         $current_imgs = json_decode($this->imagenes);
-
+        
         if($current_imgs === null){
             $this->imagenes = json_encode( $img_id );
         }else{
-            array_push($current_imgs, $img_id);
-            $this->imagenes = json_encode($current_imgs);
-        }   
-
+            
+            if(is_string($current_imgs)){
+                $current = [$current_imgs];
+                array_push($current, $img_id);
+                $this->imagenes = json_encode($current);
+            }else{
+                array_push($current_imgs, $img_id);
+                $this->imagenes = json_encode($current_imgs);
+            }         
+        }
         return $this;
     } 
 }
