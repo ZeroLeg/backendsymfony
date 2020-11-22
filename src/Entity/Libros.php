@@ -64,6 +64,10 @@ class Libros
      * @ORM\Column(type="string", length=255)
      */
     private $category;
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $imagenes;
 
     public function getId(): ?int
     {
@@ -190,4 +194,25 @@ class Libros
 
         return $this;
     }
+
+    public function getImagenes(): ?int
+    {
+        $current_imgs = json_decode($this->imagenes);
+        return sizeof($current_imgs);
+    }
+
+    public function setImagenes(string $img_id): self
+    {
+        $current_imgs = []; 
+        $current_imgs = json_decode($this->imagenes);
+
+        if($current_imgs === null){
+            $this->imagenes = json_encode( $img_id );
+        }else{
+            array_push($current_imgs, $img_id);
+            $this->imagenes = json_encode($current_imgs);
+        }   
+
+        return $this;
+    } 
 }

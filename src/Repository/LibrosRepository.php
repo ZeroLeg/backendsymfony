@@ -20,7 +20,7 @@ class LibrosRepository extends ServiceEntityRepository
         parent::__construct($registry, Libros::class);
         $this->manager = $manager;
     }
-    public function saveLibro($isbm, $title, $subtitle, $author, $published, $publisher, $pages, $description, $category, $website)
+    public function saveLibro($isbm, $title, $subtitle, $author, $published, $publisher, $pages, $description, $category, $website, $imagenes)
     {
         $newLibro = new Libros();
 
@@ -34,12 +34,23 @@ class LibrosRepository extends ServiceEntityRepository
             ->setPages($pages)
             ->setDescription($description)
             ->setWebsite($website)
-            ->setCategory($category);
+            ->setCategory($category)
+            ->setImagenes($imagenes);
 
 
         $this->manager->persist($newLibro);
         $this->manager->flush();
     }
+
+    public function saveImgToLibro(Libros $libro): Libros
+    {    
+
+        $this->manager->persist($libro);
+        $this->manager->flush();
+
+        return $libro;
+    }
+
 
     public function removeLibro(Libros $libro)
     {

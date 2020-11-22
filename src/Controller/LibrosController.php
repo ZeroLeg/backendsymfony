@@ -60,7 +60,6 @@ class LibrosController
         $title = $data['title'];
         $subtitle = $data['subtitle'];
         $author = $data['author'];
-        //$published = new \DateTime('@'.strtotime('now'));
         $published = new \DateTime('@'.strtotime($data['published']));
         $publisher = $data['publisher'];
         $pages = $data['pages'];
@@ -91,7 +90,9 @@ class LibrosController
             'publisher' => $libro->getPublisher(),
             'pages' => $libro->getPages(),
             'description' => $libro->getDescription(),
-            'category' => $libro->getCategory()
+            'category' => $libro->getCategory(),
+            'imagenes' => $libro->getImagenes(),
+
         ];
 
         return new JsonResponse($data, Response::HTTP_OK);
@@ -147,7 +148,7 @@ class LibrosController
                 'publisher' => $libro->getPublisher(),
                 'pages' => $libro->getPages(),
                 'description' => $libro->getDescription(),
-                'category' => $libro->getCategory()
+                'category' => $libro->getCategory(),
             ];
 
             array_push($data, $libro_insertado);
@@ -198,6 +199,22 @@ class LibrosController
         }
 
         return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("libros/add_img/{isbn}", name="add_img_libro", methods={"POST"})
+     */
+    public function addImgToLibro($isbn, Request $request): JsonResponse
+    {
+        
+        $libro = $this->LibrosRepository->findOneBy(['isbn' => $isbn]);
+        $data = json_decode($request->getContent(), true);
+
+        empty($data['img_id']) ? true : $libro ->setImagenes($data['img_id']);
+
+        $addImg = $this->LibrosRepository->saveImgToLibro( $libro );
+
+        return new JsonResponse(['status' => 'Libro anyadido!'], Response::HTTP_CREATED);
     }
 }
 
