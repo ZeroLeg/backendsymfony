@@ -201,6 +201,18 @@ class Libros
         return sizeof($current_imgs);
     }
 
+    public function getImagenesId(): ?array
+    {
+        $current_imgs = json_decode($this->imagenes);
+
+        if(is_string($current_imgs)){
+            $current = [$current_imgs];
+            return $current;
+        }else{
+            return $current_imgs;
+        } 
+    }
+
     public function setImagenes(string $img_id): self
     {
         $current_imgs = json_decode($this->imagenes);

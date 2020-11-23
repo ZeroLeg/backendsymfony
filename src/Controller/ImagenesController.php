@@ -51,7 +51,24 @@ class ImagenesController
             array_push($data, $imagen_insertado);
         }
 
-        return new JsonResponse($data, Response::HTTP_OK);
+        $response = new JsonResponse($data, Response::HTTP_OK);       
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
+    }
+
+    /**
+     * @Route("imagenes/{id}", name="get_src_url", methods={"GET"})
+     */
+    public function getUrl($id): JsonResponse
+    {
+        $imagen = $this->ImagenesRepository->findOneBy(['id' => $id]);;
+        $data = [];
+
+        array_push($data, $imagen->getUrl());
+
+        $response = new JsonResponse($data, Response::HTTP_OK);       
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 
 }

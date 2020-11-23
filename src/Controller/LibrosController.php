@@ -71,7 +71,9 @@ class LibrosController
 
         $this->LibrosRepository->saveLibro($isbn, $title, $subtitle, $author, $published, $publisher, $pages, $description, $category, $website );
 
-        return new JsonResponse(['status' => 'Libro anyadido!'], Response::HTTP_CREATED);
+        $response = new JsonResponse(['status' => 'Libro anyadido!'], Response::HTTP_CREATED);       
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 
     /**
@@ -153,8 +155,9 @@ class LibrosController
 
             array_push($data, $libro_insertado);
         }
-
-        return new JsonResponse($data, Response::HTTP_OK);
+        $response = new JsonResponse($data, Response::HTTP_OK);       
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 
     /**
@@ -166,7 +169,9 @@ class LibrosController
 
         $this->LibrosRepository->removeLibro($libro);
         
-        return new JsonResponse(['status' => 'Libro borrado!'], Response::HTTP_OK);
+        $response = new JsonResponse(['status' => 'Libro borrado!'], Response::HTTP_O);       
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 
     /**
@@ -215,6 +220,24 @@ class LibrosController
         $addImg = $this->LibrosRepository->saveImgToLibro( $libro );
 
         return new JsonResponse(['status' => 'Libro anyadido!'], Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("libros/get_imgs/{isbn}", name="get_imgs", methods={"GET"})
+     */
+    public function getImgsId($isbn): JsonResponse
+    {
+        
+        $libro = $this->LibrosRepository->findOneBy(['isbn' => $isbn]);
+        $data = [];
+
+        $libro_busqueda = [
+            'imagenes' => $libro->getImagenesId(),
+        ];
+
+        $response = new JsonResponse($libro_busqueda, Response::HTTP_OK);       
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 }
 
