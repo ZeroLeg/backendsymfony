@@ -20,7 +20,7 @@ class LibrosRepository extends ServiceEntityRepository
         parent::__construct($registry, Libros::class);
         $this->manager = $manager;
     }
-    public function saveLibro($isbm, $title, $subtitle, $author, $published, $publisher, $pages, $description, $category, $website, $imagenes)
+    public function saveLibro($isbm, $title, $subtitle, $author, $published, $publisher, $pages, $description, $category, $website, $imagenes = "")
     {
         $newLibro = new Libros();
 

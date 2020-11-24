@@ -96,8 +96,9 @@ class LibrosController
             'imagenes' => $libro->getImagenes(),
 
         ];
-
-        return new JsonResponse($data, Response::HTTP_OK);
+        $response = new JsonResponse($data, Response::HTTP_OK);       
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        return $response;
     }
 
 
@@ -166,10 +167,9 @@ class LibrosController
     public function delete($isbn): JsonResponse
     {
         $libro = $this->LibrosRepository->findOneBy(['isbn' => $isbn]);
-
         $this->LibrosRepository->removeLibro($libro);
         
-        $response = new JsonResponse(['status' => 'Libro borrado!'], Response::HTTP_O);       
+        $response = new JsonResponse(['status' => 'Libro borrado!'], Response::HTTP_OK);       
         $response->headers->set('Access-Control-Allow-Origin', '*');
         return $response;
     }

@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 use App\Repository\ImagenesRepository;
+use App\Repository\LibrosRepository;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,22 +18,38 @@ class ImagenesController
 {
     private $ImagenesRepository;
 
-    public function __construct(ImagenesRepository $ImagenesRepository)
+    private $LibrosRepository;
+
+    public function __construct(ImagenesRepository $ImagenesRepository, LibrosRepository $LibrosRepository)
     {
         $this->ImagenesRepository = $ImagenesRepository;
+        $this->LibrosRepository = $LibrosRepository;
     }
-
     /**
      * @Route("imagenes", name="add_imagen", methods={"POST"})
      */
     public function add(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        
+        $isbn = $request->get('isbn');
+        $libro = $this->LibrosRepository->findOneBy(['isbn' => $isbn]);
 
-        $url = $data['url'];
-        $this->ImagenesRepository->saveImagen($url );
+        //return new JsonResponse(['status' => 'Imagen anyadida!'], Response::HTTP_CREATED);
+        
+        foreach($request->files as $uploadedFile) {
+            $name = $uploadedFile->getClientOriginalName();
+            $file = $uploadedFile->move('../../frontend/public/assets/', $name); //Path del front
+        }
+
+        $this->ImagenesRepository->saveImagen( "assets/".$name );
+        $imagenes = $this->ImagenesRepository->findAll();
+        $id = $imagenes[sizeof($imagenes)-1]->getId();
+
+        $libro ->setImagenes($id);
+        $addImg = $this->LibrosRepository->saveImgToLibro( $libro );
 
         return new JsonResponse(['status' => 'Imagen anyadida!'], Response::HTTP_CREATED);
+
     }
 
     /**
